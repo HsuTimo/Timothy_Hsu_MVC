@@ -90,6 +90,33 @@ namespace Timothy_Hsu_MVC.Controllers
             await _repository.CreateAsync(task);
             return RedirectToAction(nameof(ScrumBoard));
         }
+        [HttpGet]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            var toDelete = await _repository.SelectByIdAsync<ScrumTask>(id);
+            return View(toDelete);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteTask(ScrumTask scrumTask)
+        {
+            await _repository.DeleteAsync(scrumTask);
+            return RedirectToAction(nameof(ScrumBoard)); 
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditTask(int id)
+        {
+            var toEdit = await _repository.SelectByIdAsync<ScrumTask>(id);
+            return View(toEdit);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditTask(ScrumTask newScrumTask)
+        {
+            var toEdit = await _repository.SelectByIdAsync<ScrumTask>(newScrumTask.Id);
+            toEdit.Title = newScrumTask.Title;
+            toEdit.Description = newScrumTask.Description;
+            await _repository.UpdateAsync(toEdit);
+            return RedirectToAction(nameof(ScrumBoard));
+        }
 
     }
 }
