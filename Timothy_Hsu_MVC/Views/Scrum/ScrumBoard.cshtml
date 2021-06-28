@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Timothy_Hsu_MVC.Models.ScrumTask>
+
+@{
+    ViewData["Title"] = "ShowBoard";
+    string userName = (string)TempData.Peek("SelectedUserName");
+    int userId = (int)TempData.Peek("SelectedUserId");
+}
+
+
+<h4>Welcome @userName</h4>
+<hr />
+<p>
+    <a asp-action="CreateTask">Create new task</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Not Checked Out</th>
+            <th>Checked Out</th>
+            <th>Done</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @foreach (var item in Model.Where(x=>x.ScrumStatusId==1))
+                {
+                <div class="card bg-danger" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Description</p>
+                        <a asp-action="CheckOutTask" asp-route-id="@item.Id" class="card-link text-white">Check this task out</a>
+
+                    </div>
+                </div>
+                }
+            </td>
+            <td>
+                @foreach (var item in Model.Where(x => x.ScrumStatusId == 2))
+                {
+                <div class="card bg-warning" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p>Checked out by @item.ScrumUser.Name</p>
+                        @if (userId == item.ScrumUser.Id)
+                        {
+                            <a asp-action="CompleteTask" asp-route-id="@item.Id" class="card-link text-white">Complete this task</a>
+                            <br />
+                            <a asp-action="UndoCheckoutTask" asp-route-id="@item.Id" class="card-link text-white">Undo checkout</a>
+                        }
+                    </div>
+                </div>
+                }
+            </td>
+            <td>
+                @foreach (var item in Model.Where(x => x.ScrumStatusId == 3))
+                {
+                <div class="card bg-success" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p>Completed by @item.ScrumUser.Name</p>
+                        @if (userId == item.ScrumUser.Id)
+                        {
+                            <a asp-action="UndoCompleteTask" asp-route-id="@item.Id" class="card-link text-white">Undo complete</a>
+                        }
+                    </div>
+                </div>
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>
+<hr/>
