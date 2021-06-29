@@ -46,8 +46,12 @@ namespace Timothy_Hsu_MVC.Controllers
         }
         public async Task<IActionResult> ScrumBoard()
         {
-            var list = await _repository.SelectAllAsync<ScrumTask>();
-            return View(list);
+            var viewModel = new ScrumBoardViewModel()
+            {
+                ScrumTasks = await _repository.SelectAllAsync<ScrumTask>(),
+                NewTask = new ScrumTask()
+            };
+            return View(viewModel);
         }
         public async Task<IActionResult> CheckOutTask(int id)
         {
@@ -79,6 +83,7 @@ namespace Timothy_Hsu_MVC.Controllers
             await _repository.UpdateAsync(toUndo);
             return RedirectToAction(nameof(ScrumBoard));
         }
+        [HttpGet]
         public IActionResult CreateTask()
         {
             return View();
